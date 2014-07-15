@@ -1,7 +1,7 @@
 var path = require('path')
 
 module.exports = function(sourceFiles) {
-  var brfs    = ['-t', require.resolve('brfs')]
+  var brfs    = ['-g', require.resolve('brfs')]
   var envify  = ['-t', '[', require.resolve('envify')]
 
   envify.push('--dirname', path.basename(__dirname))

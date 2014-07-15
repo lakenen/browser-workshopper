@@ -3,7 +3,7 @@ var fs         = require('fs')
 var container  = document.getElementById('container')
 var readme     = fs.readFileSync(__dirname + '/README.md', 'utf8')
 
-require('../common')({
+require('browser-workshopper-exercise')({
   dirname: process.env.dirname
   , description: readme
   , test: test
