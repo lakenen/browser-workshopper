@@ -1,0 +1,209 @@
+@import ./reset.css;
+
+body {
+  font-family: 'Source Code Pro', monospace;
+
+  overflow: hidden;
+  position: absolute;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  color: #fff;
+  background: #000;
+  margin: 0;
+  padding: 0;
+}
+
+body .browser-workshopper-content {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+body .browser-workshopper-sidebar {
+  width: 420px;
+}
+
+.browser-workshopper-content p {
+  margin-bottom: 1em;
+}
+
+.browser-workshopper-content a {
+  color: #5ED7F7;
+  text-decoration: none;
+  border-bottom: 1px solid #5ED7F7;
+}
+
+.browser-workshopper-content pre,
+.browser-workshopper-content code {
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+}
+
+.browser-workshopper-content h1 {
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px dotted #AAA;
+}
+
+.browser-workshopper-content hr {
+  margin: 1.25em 0;
+  height: 0;
+  border-top: 1px dotted #AAA;
+}
+
+.browser-workshopper-content pre {
+  margin-bottom: 1em;
+  overflow-x: auto;
+  overflow-y: none;
+  background-color: rgba(0,0,0,0.5);
+  padding: 1em;
+}
+
+.browser-workshopper-content pre + h2,
+.browser-workshopper-content pre + h3 {
+  margin-top: 2em;
+}
+
+.browser-workshopper-content code {
+  color: #AAA;
+}
+
+.browser-workshopper-content pre > code {
+  color: #FFF;
+}
+.browser-workshopper-content ul,
+.browser-workshopper-content ol {
+  margin-bottom: 1em;
+}
+
+.browser-workshopper-content ul > li:before {
+  content: '\00a0* ';
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+.browser-workshopper-content ul > li {
+  text-indent: -21px;
+  position: relative;
+  left: 21px;
+  margin-right: 21px;
+  margin-bottom: 0.25em;
+}
+
+.browser-workshopper-content ol > li {
+  margin-left: 2em;
+  margin-bottom: 0.5em;
+}
+
+#container {
+  position: absolute;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+}
+
+.browser-workshopper-content .def { border-bottom: 1px dotted rgba(255,255,255,0.5); }
+.browser-workshopper-content .hljs-preprocessor {
+  color: #FF6E57;
+}
+.browser-workshopper-content .hljs-comment .def { border-bottom: none; }
+.browser-workshopper-content .hljs-preprocessor .def { border-bottom: none; }
+.browser-workshopper-content .hljs-number .def { border-bottom: none; }
+.browser-workshopper-content .hljs-comment {
+  color: #AAA;
+}
+.browser-workshopper-content .hljs-keyword .def { border-bottom-color: rgba(255, 226, 95, 0.5); }
+.browser-workshopper-content .hljs-keyword {
+  color: #FFE25F;
+}
+.browser-workshopper-content .hljs-number {
+  color: #58FF8B;
+}
+.browser-workshopper-content .hljs-literal {
+  color: #FF6E57;
+}
+
+.browser-workshopper-content .warn {
+  color: #FF6E57;
+}
+
+.notification {
+  opacity: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: #34363B;
+  padding: 1em;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+  width: 300px;
+  background: #FF6E57;
+
+  -moz-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
+  -ms-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
+  -o-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
+  transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
+}
+
+.notification.opening {
+  opacity: 1;
+}
+
+.notification.closing {
+  opacity: 0;
+  right: -200px!important;
+}
+
+.buttons {
+  position: absolute;
+  top: 4px; right: 4px;
+  list-style-type: none;
+}
+
+.buttons .button-home,
+.buttons .button-open {
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: #A9B0C2;
+  margin-left: 4px;
+  cursor: pointer;
+  float: right;
+  width: 48px;
+  height: 48px;
+}
+
+.buttons .button-home {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iODQiIHZpZXdCb3g9IjAgMCAxMDAgODQiPjxwYXRoIGZpbGw9IiMzNDM2M0IiIGQ9Ik04MiAzMi42NDF2LTIzLjY0MWgtMTR2OS4zNTlsLTE4LTE4LjM1OS01MCA1MWgxMnYzM2gzMXYtMjdoMTR2MjdoMzF2LTMzaDEyeiIvPjwvc3ZnPg==');
+}
+.buttons .button-open {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0iIzM0MzYzQiIgZD0iTTk2LjI0OSAyNS4wNTdoLTU1LjA2OGwtOS44MDMtMTEuMzc1LS4wMi4wMDZjLS42ODEtLjY5Ni0xLjYyOC0xLjEzMS0yLjY3OC0xLjEzMWgtMjQuOTMxYy0yLjA3IDAtMy43NDkgMS42NzktMy43NDkgMy43NXY2Ny4zODdjMCAyLjA3MSAxLjY3OSAzLjc1IDMuNzQ5IDMuNzVoOTIuNWMyLjA3MSAwIDMuNzUtMS42NzkgMy43NTEtMy43NXYtNTQuODg4YzAtMi4wNzEtMS42OC0zLjc0OS0zLjc1MS0zLjc0OXoiLz48L3N2Zz4=');
+}
+
+.buttons .button-home.flashing,
+.buttons .button-open.flashing,
+.flashing .browser-workshopper-show {
+  animation: flashing 1s infinite;
+  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+body .buttons .button-home.flashing,
+body .buttons .button-open.flashing {
+  animation-name: flashing, wobbling;
+}
+
+.browser-workshopper-hide.flashing {
+  animation: wobbling 1s infinite;
+}
+
+@keyframes flashing {
+  20%, 80% { background-color: #A9B0C2; }
+  50%      { background-color: #FFE169; }
+}
+
+@keyframes wobbling {
+  0%, 50%, 100% { transform: rotate(+0deg); }
+  60%           { transform: rotate(-3deg); }
+  80%           { transform: rotate(+3deg); }
+}
