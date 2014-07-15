@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "A browser-based node workshopper skeleton.",
   "main": "index.js",
-  "bin": "index.js",
+  "bin": {
+    "browser-workshopper": "index.js"
+  },
   "scripts": {
     "pack": "rm -rf answers; rm -rf node_modules && npm install && npm dedupe && node prepack && find . -type file | grep -v workshop.tar.gz | grep -v .git | tar -cvzf ./workshop.tar.gz -T - && node postpack",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,5 +42,14 @@
     "sliced": "0.0.5",
     "wordwrap": "0.0.2",
     "xhr": "^1.9.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lakenen/browser-workshopper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lakenen/browser-workshopper/issues"
+  },
+  "homepage": "https://github.com/lakenen/browser-workshopper"
 }
