@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var answers   = require('./lib/create-answers')
-var exercises = require('./exercises')
 var styles    = require('./style')
+var extend    = require('extend')
 var opener    = require('opener')
 var beefy     = require('beefy')
 var chalk     = require('chalk')
@@ -11,22 +11,30 @@ var path      = require('path')
 var url       = require('url')
 var fs        = require('fs')
 
-var mainPort = 12492
+var mainPort = process.env.WORKSHOPPER_PORT || 12492
 var closeWindow = fs.readFileSync(
   path.join(__dirname, 'lib/close-window.html')
 )
 
 module.exports = createServer
 
-createServer(process.cwd())
+function createServer(opt) {
+  opt = opt || {}
+  mainPort = opt.port || mainPort
+  var exercises = opt.exercises || {}
+    , exercisesDir = opt.exercisesDir
+    , root = process.cwd()
+    , menuOptions = extend(
+      {}
+      , opt.menu
+      , { exercises: exercises }
+    )
 
-function createServer(root) {
   console.error(fs.readFileSync(
     __dirname + '/intro.txt', 'utf8'
   ))
 
-  answers(root, function(err) {
-    if (err) throw err
+  answers(exercises, exercisesDir, root, function(err) {
     console.error('Done!')
     console.error('Booting up the workshop in your browser in just a second...')
     console.error('')
@@ -46,7 +54,8 @@ function createServer(root) {
     })
 
     var exRoutes = exLinks.map(function(link, i) {
-      return require('./exercises/' + link + '/server.js')(exFiles[i])
+      var serverPath = path.join(exercisesDir, link, 'server.js')
+      return require(serverPath)(exFiles[i])
     })
 
     var menu = beefy({
@@ -54,6 +63,14 @@ function createServer(root) {
       , entries: ['index.js']
       , quiet: false
       , watchify: false
+      , bundlerFlags: []
+        .concat(['-g', require.resolve('brfs')])
+        .concat([
+          '-t', '['
+          , require.resolve('envify')
+          , '--menu', JSON.stringify(menuOptions)
+          , ']'
+        ])
     })
 
     http.createServer(function(req, res) {
