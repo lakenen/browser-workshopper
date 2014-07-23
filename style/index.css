@@ -13,33 +13,33 @@ body {
   padding: 0;
 }
 
-body .browser-workshopper-content {
+body .bw-sidebar-content {
   font-family: 'Source Code Pro', monospace;
   font-size: 12px;
   line-height: 1.5em;
 }
 
-body .browser-workshopper-sidebar {
+body .bw-sidebar-sidebar {
   width: 420px;
 }
 
-.browser-workshopper-content p {
+.bw-sidebar-content p {
   margin-bottom: 1em;
 }
 
-.browser-workshopper-content a {
+.bw-sidebar-content a {
   color: #5ED7F7;
   text-decoration: none;
   border-bottom: 1px solid #5ED7F7;
 }
 
-.browser-workshopper-content pre,
-.browser-workshopper-content code {
+.bw-sidebar-content pre,
+.bw-sidebar-content code {
   font-family: 'Source Code Pro', monospace;
   font-weight: 200;
 }
 
-.browser-workshopper-content h1 {
+.bw-sidebar-content h1 {
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
@@ -48,13 +48,13 @@ body .browser-workshopper-sidebar {
   border-bottom: 1px dotted #AAA;
 }
 
-.browser-workshopper-content hr {
+.bw-sidebar-content hr {
   margin: 1.25em 0;
   height: 0;
   border-top: 1px dotted #AAA;
 }
 
-.browser-workshopper-content pre {
+.bw-sidebar-content pre {
   margin-bottom: 1em;
   overflow-x: auto;
   overflow-y: none;
@@ -62,30 +62,30 @@ body .browser-workshopper-sidebar {
   padding: 1em;
 }
 
-.browser-workshopper-content pre + h2,
-.browser-workshopper-content pre + h3 {
+.bw-sidebar-content pre + h2,
+.bw-sidebar-content pre + h3 {
   margin-top: 2em;
 }
 
-.browser-workshopper-content code {
+.bw-sidebar-content code {
   color: #AAA;
 }
 
-.browser-workshopper-content pre > code {
+.bw-sidebar-content pre > code {
   color: #FFF;
 }
-.browser-workshopper-content ul,
-.browser-workshopper-content ol {
+.bw-sidebar-content ul,
+.bw-sidebar-content ol {
   margin-bottom: 1em;
 }
 
-.browser-workshopper-content ul > li:before {
+.bw-sidebar-content ul > li:before {
   content: '\00a0* ';
   font-weight: bold;
   opacity: 0.5;
 }
 
-.browser-workshopper-content ul > li {
+.bw-sidebar-content ul > li {
   text-indent: -21px;
   position: relative;
   left: 21px;
@@ -93,7 +93,7 @@ body .browser-workshopper-sidebar {
   margin-bottom: 0.25em;
 }
 
-.browser-workshopper-content ol > li {
+.bw-sidebar-content ol > li {
   margin-left: 2em;
   margin-bottom: 0.5em;
 }
@@ -104,34 +104,34 @@ body .browser-workshopper-sidebar {
   right: 0; bottom: 0;
 }
 
-.browser-workshopper-content .def { border-bottom: 1px dotted rgba(255,255,255,0.5); }
-.browser-workshopper-content .hljs-preprocessor {
+.bw-sidebar-content .def { border-bottom: 1px dotted rgba(255,255,255,0.5); }
+.bw-sidebar-content .hljs-preprocessor {
   color: #FF6E57;
 }
-.browser-workshopper-content .hljs-comment .def { border-bottom: none; }
-.browser-workshopper-content .hljs-preprocessor .def { border-bottom: none; }
-.browser-workshopper-content .hljs-number .def { border-bottom: none; }
-.browser-workshopper-content .hljs-comment {
+.bw-sidebar-content .hljs-comment .def { border-bottom: none; }
+.bw-sidebar-content .hljs-preprocessor .def { border-bottom: none; }
+.bw-sidebar-content .hljs-number .def { border-bottom: none; }
+.bw-sidebar-content .hljs-comment {
   color: #AAA;
 }
-.browser-workshopper-content .hljs-keyword .def { border-bottom-color: rgba(255, 226, 95, 0.5); }
-.browser-workshopper-content .hljs-keyword {
+.bw-sidebar-content .hljs-keyword .def { border-bottom-color: rgba(255, 226, 95, 0.5); }
+.bw-sidebar-content .hljs-keyword {
   color: #FFE25F;
 }
-.browser-workshopper-content .hljs-number {
+.bw-sidebar-content .hljs-number {
   color: #58FF8B;
 }
-.browser-workshopper-content .hljs-literal {
+.bw-sidebar-content .hljs-literal {
   color: #FF6E57;
 }
 
-.browser-workshopper-content .warn {
+.bw-sidebar-content .warn {
   color: #FF6E57;
 }
 
 .notification {
   opacity: 0;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 12px;
   color: #34363B;
   padding: 1em;
@@ -183,7 +183,7 @@ body .browser-workshopper-sidebar {
 
 .buttons .button-home.flashing,
 .buttons .button-open.flashing,
-.flashing .browser-workshopper-show {
+.flashing .bw-sidebar-show {
   animation: flashing 1s infinite;
   animation-timing-function: cubic-bezier(1, 0, 0, 1);
 }
@@ -193,7 +193,7 @@ body .buttons .button-open.flashing {
   animation-name: flashing, wobbling;
 }
 
-.browser-workshopper-hide.flashing {
+.bw-sidebar-hide.flashing {
   animation: wobbling 1s infinite;
 }
 
@@ -206,4 +206,39 @@ body .buttons .button-open.flashing {
   0%, 50%, 100% { transform: rotate(+0deg); }
   60%           { transform: rotate(-3deg); }
   80%           { transform: rotate(+3deg); }
+}
+
+.success-msg {
+  position: fixed;
+  top: 100px;
+  right: 100px;
+  bottom: 100px;
+  left: 100px;
+  background: rgba(100, 240, 255, 0.95);
+  color: black;
+  visibility: hidden;
+  z-index: 1;
+  overflow: auto;
+  opacity: 0;
+  border: 3px solid rgba(75,160,190, 0.95);
+  font-family: Consolas, Courier, monospace;
+  transition: opacity 0.25s ease 0.75s, visibility 0 ease 0.75s;
+}
+
+.success-msg h1,
+.success-msg p {
+  margin: 1em;
+  color: #242435;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.success-msg h1 {
+  font-size: 2em;
+  text-align: center;
+}
+
+.success .success-msg {
+  visibility: visible;
+  opacity: 1;
 }

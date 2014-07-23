@@ -1,19 +1,22 @@
-var fs         = require('fs')
+var fs = require('fs')
+var readme = fs.readFileSync(__dirname + '/README.md', 'utf8')
+var files = fs.readdirSync(__dirname + '/files')
 
-var container  = document.getElementById('container')
-var readme     = fs.readFileSync(__dirname + '/README.md', 'utf8')
-
-require('browser-workshopper-exercise')({
-  dirname: process.env.dirname
+module.exports = {
+    dirname: __dirname
   , description: readme
+  , files: files
   , test: test
-})
+  , setup: setup
+}
 
-// do something with the lesson anwser file(s)
-require(process.env.file_example_js);
-
-// test function to call to determine whether the user has passed the lession
 function test(done) {
   // always pass
   return done(null, true)
+}
+
+function setup(done) {
+  window.beep = 'bop'
+  require(files[0])
+  return done()
 }

@@ -32,6 +32,10 @@
     "rework-inline": "^0.2.0",
     "rework-npm": "^0.6.1",
     "rework-plugin-ease": "^1.0.1",
+    "script-load": "^0.1.0",
+    "send": "^0.6.0",
+    "sse-stream": "0.0.4",
+    "through": "^2.3.4",
     "wordwrap": "0.0.2"
   },
   "devDependencies": {},

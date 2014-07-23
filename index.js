@@ -1,17 +1,63 @@
-#!/usr/bin/env node
-
+var browserify= require('browserify')
+var watchify  = require('watchify')
 var answers   = require('./lib/create-answers')
+var through   = require('through')
 var styles    = require('./style')
 var extend    = require('extend')
 var opener    = require('opener')
+var mkdirp    = require('mkdirp')
 var beefy     = require('beefy')
 var chalk     = require('chalk')
+var brfs      = require('brfs')
 var http      = require('http')
 var path      = require('path')
 var url       = require('url')
+var sse       = require('sse-stream')('/sse')
 var fs        = require('fs')
 
-var mainPort = process.env.WORKSHOPPER_PORT || 12492
+
+var trumpet = require('trumpet')
+  , duplexer = require('duplexer')
+  , through = require('through');
+
+function inject(src) {
+  var tr1 = trumpet()
+    , tr2 = trumpet()
+    , needToAddScript = true
+
+  var script = '<script type=\"text/javascript\" src="' + src + '"><\/script>\n'
+
+  var firstScriptTag = tr1.createStream('script', { outer: true })
+  var bodyTag = tr2.createStream('body')
+
+  firstScriptTag // Inject the new script before the first existing <script>
+    .pipe(through(
+      function (data) {
+        if (needToAddScript) {
+          this.queue(script)
+          needToAddScript = false
+        }
+        this.queue(data)
+      }))
+    .pipe(firstScriptTag)
+
+  bodyTag // If there were no <script>'s, insert the script right before </body>
+    .pipe(through(
+      null,
+      function () {
+        if (needToAddScript) {
+          this.queue(script)
+        }
+        this.queue(null)
+      }))
+    .pipe(bodyTag)
+
+  tr1.pipe(tr2)
+
+  return duplexer(tr1, tr2)
+}
+
+var mainPort = 12492
 var closeWindow = fs.readFileSync(
   path.join(__dirname, 'lib/close-window.html')
 )
@@ -22,13 +68,16 @@ function createServer(opt) {
   opt = opt || {}
   mainPort = opt.port || mainPort
   var exercises = opt.exercises || {}
-    , exercisesDir = opt.exercisesDir
-    , root = process.cwd()
-    , menuOptions = extend(
-      {}
-      , opt.menu
-      , { exercises: exercises }
-    )
+    , exercisesDir = opt.exercisesDir || 'exercises'
+    , root = opt.root || process.cwd()
+    , lastUpdate = 0
+    , tmpDir = path.resolve(root, '.tmp')
+    , events = through()
+
+  opt.browserifyTransforms = opt.browserifyTransforms || []
+
+  console.log(tmpDir)
+  mkdirp.sync(tmpDir)
 
   console.error(fs.readFileSync(
     __dirname + '/intro.txt', 'utf8'
@@ -53,10 +102,78 @@ function createServer(opt) {
       })
     })
 
-    var exRoutes = exLinks.map(function(link, i) {
-      var serverPath = path.join(exercisesDir, link, 'server.js')
-      return require(serverPath)(exFiles[i])
+    var exBundles = exLinks.map(function(link, i) {
+      var exPath = path.join(exercisesDir, link, 'index.js')
+      return ['-r', exPath+':'+link]
+      // return [exPath, {expose: link}]
+    }).reduce(function (a, b) {
+      return a.concat(b)
     })
+    var exRoutes = exLinks.map(function(link, i) {
+      if (exFiles[i].length === 0) {
+        return function (req, res) {
+          res.end()
+        }
+      }
+      var w = watchify()
+      exFiles[i].forEach(function (file) {
+        w.add(file)
+        w.require(file, { expose: path.basename(file) })
+      })
+      opt.browserifyTransforms.forEach(function (t) {
+        w.transform(t)
+      })
+      w.on('update', function (file) {
+        console.log('file updated', file)
+        lastUpdate = Date.now()
+        events.queue(path.basename(file))
+      })
+      return function (req, res) {
+        console.log('bundling', link)
+        res.setHeader('content-type', 'text/javascript')
+        w.bundle().pipe(res)
+      }
+      // return beefy({
+      //     cwd: path.join(root, link)
+      //   , entries: exFiles[i].map(path.basename)
+      //   , live: true
+      //   , watchify: false
+      //   , quiet: false
+      //   , bundlerFlags: exFiles[i].map(function (file) {
+      //       return ['-r', file + ':' + path.basename(file)]
+      //     }).reduce(function (a, b) { return a.concat(b) })
+      // })
+    })
+
+    var currentExercise
+    var exercise = function (name, route, req, res) {
+      if (/\.js$/.test(req.url)) {
+        route(req, res)
+      } else {
+        // start this example's server
+        if (new RegExp(name+'$').test(req.url) || !currentExercise) {
+          // requesting index.html
+          if (currentExercise) {
+            currentExercise.cleanup()
+          }
+          try {
+            currentExercise = require(path.join(exercisesDir, name, 'server.js'))
+          } catch (err) {
+            currentExercise = function (req, res, next) {
+              next()
+            }
+            currentExercise.cleanup = function () {}
+          }
+        }
+        currentExercise(req, res, function () {
+          // serve index.html
+          res.setHeader('content-type', 'text/html')
+          fs.createReadStream(path.resolve(__dirname, 'lib/index.html'))
+            .pipe(inject(name + '.js'))
+            .pipe(res)
+        })
+      }
+    }
 
     var menu = beefy({
         cwd: path.join(__dirname, 'menu')
@@ -64,16 +181,36 @@ function createServer(opt) {
       , quiet: false
       , watchify: false
       , bundlerFlags: []
-        .concat(['-g', require.resolve('brfs')])
+        .concat(['-t', require.resolve('brfs')])
         .concat([
           '-t', '['
           , require.resolve('envify')
-          , '--menu', JSON.stringify(menuOptions)
+          , '--title', opt.title
+          , '--exercises', exercisesDir
           , ']'
         ])
     })
 
-    http.createServer(function(req, res) {
+    var main = beefy({
+        cwd: path.join(__dirname, 'lib')
+      , entries: ['main.js']
+      , quiet: false
+      , watchify: false
+      , live: true
+      , bundlerFlags: ['-g', '/Users/clakenen/workspace/lakenen/forked/brfs/']
+        .concat(['-t', require.resolve('html-browserify')])
+        .concat(exBundles)
+    })
+
+    // var b = browserify([path.resolve(__dirname, 'lib/main.js')])
+    // b.transform({global:true},'/Users/clakenen/workspace/lakenen/forked/brfs/')
+    // b.transform(require.resolve('html-browserify'))
+    // exBundles.forEach(function (args) {
+    //   b.require.apply(b, args)
+    // })
+    // b.bundle().pipe(fs.createWriteStream(path.resolve(tmpDir, 'main.js')))
+
+    var server = http.createServer(function(req, res) {
       var uri = url.parse(req.url).pathname
       var paths = uri.split('/').filter(Boolean)
 
@@ -83,6 +220,18 @@ function createServer(opt) {
         return
       }
 
+      if (uri === '/main.js') {
+        // res.setHeader('content-type', 'text/javascript')
+        // fs.createReadStream(path.resolve(tmpDir, 'main.js'))
+        //   .pipe(res)
+        main(req, res)
+        return
+      }
+      if (uri === '/live-reload') {
+        res.setHeader('content-type', 'application/json')
+        return res.end(JSON.stringify({ lastUpdate: lastUpdate }))
+      }
+
       if (paths[0] === 'open') {
         opener(path.join(root, paths[1]))
         return res.end(closeWindow)
@@ -90,11 +239,7 @@ function createServer(opt) {
 
       for (var i = 0; i < exLinks.length; i++) {
         if (uri.indexOf(exLinks[i]) === 1) {
-          req.url = req.url
-            .replace(exLinks[i], '')
-            .replace(/\/+/g, '/')
-
-          return exRoutes[i](req, res)
+          return exercise(exLinks[i], exRoutes[i], req, res)
         }
       }
 
@@ -106,6 +251,12 @@ function createServer(opt) {
       opener(url)
       console.log(chalk.yellow('WORKSHOP URL:'), chalk.underline.blue(url))
       console.log()
+    })
+
+    sse.install(server)
+
+    sse.on('connection', function (client) {
+      events.pipe(client)
     })
   }
 }

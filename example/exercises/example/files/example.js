@@ -1,4 +1,1 @@
-function exampleLesson() {
-  console.log('hello, world!');
-  return true;
-}
+console.log('hello, world!')

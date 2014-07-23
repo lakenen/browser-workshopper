@@ -8,7 +8,5 @@ process.chdir(answers)
 workshopper({
   exercises: require('./exercises')
   , exercisesDir: path.resolve(__dirname, 'exercises')
-  , menu: {
-    title: 'Example Workshopper'
-  }
+  , title: 'Example Workshopper'
 })

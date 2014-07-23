@@ -1,1 +1,4 @@
-require('browser-workshopper-menu')(JSON.parse(process.env.menu))
+require('browser-workshopper-menu')({
+    exercises: require(process.env.exercises)
+  , title: process.env.title || ''
+})

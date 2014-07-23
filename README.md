@@ -1,6 +1,6 @@
 # Browser Workshopper
 
-A browser-based [workshopper](https://github.com/rvagg/workshopper) skeleton.
+A browser-based [workshopper](https://github.com/rvagg/workshopper) framework.
 
 ## Warning
 
