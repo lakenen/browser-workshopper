@@ -207,22 +207,35 @@ body .buttons .button-open.flashing {
   60%           { transform: rotate(-3deg); }
   80%           { transform: rotate(+3deg); }
 }
-
-.success-msg {
+.success-overlay {
   position: fixed;
-  top: 100px;
-  right: 100px;
-  bottom: 100px;
-  left: 100px;
-  background: rgba(100, 240, 255, 0.95);
-  color: black;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   visibility: hidden;
   z-index: 1;
-  overflow: auto;
   opacity: 0;
-  border: 3px solid rgba(75,160,190, 0.95);
+  transition: opacity 0.25s ease 0s, visibility 0 ease 0.25s;
+}
+.success-container {
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  background: rgba(100, 240, 255, 0.95);
+  border: 4px solid rgba(75,160,190, 0.95);
+}
+
+.success-msg {
+  color: black;
   font-family: Consolas, Courier, monospace;
-  transition: opacity 0.25s ease 0.75s, visibility 0 ease 0.75s;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  box-sizing: border-box;
+  overflow: auto;
 }
 
 .success-msg h1,
@@ -238,7 +251,25 @@ body .buttons .button-open.flashing {
   text-align: center;
 }
 
-.success .success-msg {
+.success .success-overlay {
   visibility: visible;
   opacity: 1;
+  transition: opacity 0.25s ease 0.75s, visibility 0 ease 0.75s;
+}
+
+.success-hide-btn {
+  box-sizing: border-box;
+  background-color: #FFE169;
+  border: 4px solid rgba(75,160,190, 0.95);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  height: 48px;
+  width: 48px;
+  float: left;
+  background-size: 24px 24px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MCA5MCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgOTAgOTAiIGhlaWdodD0iMTAwIiB3aWR0aD0iMTAwIj48cGF0aCBmaWxsPSIjMzQzNjNCIiBkPSJNNDkgNDVsMTQtMTRjLjUtLjUuOC0xLjMuOS0yIC4xLS44LS4yLTEuNi0uNy0yLjFzLTEuMy0uOC0yLjEtLjdjLS44IDAtMS41LjQtMiAuOWwtMTQgMTQtMTQtMTRjLS41LS41LTEuMy0uOC0yLS45LS44LS4xLTEuNi4yLTIuMS43cy0uOCAxLjMtLjcgMi4xYzAgLjguNCAxLjUuOSAybDE0IDE0LTE0IDE0Yy0uNS41LS44IDEuMy0uOSAyLS4xLjguMiAxLjYuNyAyLjFzMS4zLjggMi4xLjdjLjggMCAxLjUtLjQgMi0uOWwxNC0xNCAxNCAxNGMuNS41IDEuMy44IDIgLjkuOC4xIDEuNi0uMiAyLjEtLjdzLjgtMS4zLjctMi4xYzAtLjgtLjQtMS41LS45LTJsLTE0LTE0eiIvPjwvc3ZnPg==');
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  outline: none;
 }
