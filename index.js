@@ -74,7 +74,6 @@ function createServer(opt) {
     , tmpDir = path.resolve(root, '.tmp')
     , events = through()
 
-  opt.browserifyTransforms = opt.browserifyTransforms || []
 
   console.log(tmpDir)
   mkdirp.sync(tmpDir)
@@ -104,10 +103,23 @@ function createServer(opt) {
 
     var exBundles = exLinks.map(function(link, i) {
       var exPath = path.join(exercisesDir, link, 'index.js')
-      return ['-r', exPath+':'+link]
+      // return ['-r', exPath+':'+link]
       // return [exPath, {expose: link}]
-    }).reduce(function (a, b) {
-      return a.concat(b)
+      return function (b) {
+        console.log(link)
+        b.require(exPath, { expose: link })
+      }
+    })
+    // .reduce(function (a, b) {
+    //   return a.concat(b)
+    // })
+    var exFileBundles = exLinks.map(function (link, i) {
+      var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
+      if (fs.statSync(bundlerPath).isFile()) {
+        console.log(bundlerPath)
+        return require(bundlerPath)
+      }
+      return function () {}
     })
     var exRoutes = exLinks.map(function(link, i) {
       if (exFiles[i].length === 0) {
@@ -120,8 +132,8 @@ function createServer(opt) {
         w.add(file)
         w.require(file, { expose: path.basename(file) })
       })
-      opt.browserifyTransforms.forEach(function (t) {
-        w.transform(t)
+      exFileBundles.forEach(function (fn) {
+        fn(w)
       })
       w.on('update', function (file) {
         console.log('file updated', file)
@@ -197,9 +209,17 @@ function createServer(opt) {
       , quiet: false
       , watchify: false
       , live: true
-      , bundlerFlags: ['-g', '/Users/clakenen/workspace/lakenen/forked/brfs/']
-        .concat(['-t', require.resolve('html-browserify')])
-        .concat(exBundles)
+      , bundler: function (path) {
+        var b = browserify(path)
+        b.transform({global:true}, '/Users/clakenen/workspace/lakenen/forked/brfs/')
+        exBundles.forEach(function (fn) {
+          fn(b)
+        })
+        exFileBundles.forEach(function (fn) {
+          fn(b)
+        })
+        return {stdout: b.bundle(), stderr: through()}
+      }
     })
 
     // var b = browserify([path.resolve(__dirname, 'lib/main.js')])
