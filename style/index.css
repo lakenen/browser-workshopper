@@ -272,4 +272,5 @@ body .buttons .button-open.flashing {
   top: -4px;
   right: -4px;
   outline: none;
+  cursor: pointer;
 }

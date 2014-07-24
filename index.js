@@ -106,7 +106,7 @@ function createServer(opt) {
       // return ['-r', exPath+':'+link]
       // return [exPath, {expose: link}]
       return function (b) {
-        console.log(link)
+        // console.log(link)
         b.require(exPath, { expose: link })
       }
     })
@@ -116,7 +116,7 @@ function createServer(opt) {
     var exFileBundles = exLinks.map(function (link, i) {
       var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
       if (fs.statSync(bundlerPath).isFile()) {
-        console.log(bundlerPath)
+        // console.log(bundlerPath)
         return require(bundlerPath)
       }
       return function () {}
