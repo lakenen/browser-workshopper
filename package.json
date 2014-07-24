@@ -17,7 +17,7 @@
     "apprise": "^1.0.0",
     "autoprefixer": "^2.1.1",
     "beefy": "^2.0.3",
-    "brfs": "^1.1.2",
+    "brfs": "^1.2.0",
     "browser-workshopper-exercise": "0.0.0",
     "browser-workshopper-menu": "0.0.0",
     "browserify": "^4.2.1",

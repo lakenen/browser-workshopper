@@ -211,7 +211,7 @@ function createServer(opt) {
       , live: true
       , bundler: function (path) {
         var b = browserify(path)
-        b.transform({global:true}, '/Users/clakenen/workspace/lakenen/forked/brfs/')
+        b.transform(require.resolve('brfs'))
         exBundles.forEach(function (fn) {
           fn(b)
         })
