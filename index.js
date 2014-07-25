@@ -74,6 +74,7 @@ function createServer(opt) {
     , tmpDir = path.resolve(root, '.tmp')
     , events = through()
 
+  opt.mainBundler = opt.mainBundler || function () {}
 
   console.log(tmpDir)
   mkdirp.sync(tmpDir)
@@ -100,19 +101,6 @@ function createServer(opt) {
         return path.resolve(dir, name)
       })
     })
-
-    var exBundles = exLinks.map(function(link, i) {
-      var exPath = path.join(exercisesDir, link, 'index.js')
-      // return ['-r', exPath+':'+link]
-      // return [exPath, {expose: link}]
-      return function (b) {
-        // console.log(link)
-        b.require(exPath, { expose: link })
-      }
-    })
-    // .reduce(function (a, b) {
-    //   return a.concat(b)
-    // })
     var exFileBundles = exLinks.map(function (link, i) {
       var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
       if (fs.statSync(bundlerPath).isFile()) {
@@ -121,6 +109,20 @@ function createServer(opt) {
       }
       return function () {}
     })
+
+    var exBundles = exLinks.map(function(link, i) {
+      var exPath = path.join(exercisesDir, link, 'index.js')
+      // return ['-r', exPath+':'+link]
+      // return [exPath, {expose: link}]
+      return function (b) {
+        // console.log(link)
+        b.require(exPath, { expose: link })
+        exFileBundles[i](b)
+      }
+    })
+    // .reduce(function (a, b) {
+    //   return a.concat(b)
+    // })
     var exRoutes = exLinks.map(function(link, i) {
       if (exFiles[i].length === 0) {
         return function (req, res) {
@@ -132,6 +134,7 @@ function createServer(opt) {
         w.add(file)
         w.require(file, { expose: path.basename(file) })
       })
+      opt.mainBundler(w)
       exFileBundles.forEach(function (fn) {
         fn(w)
       })
@@ -157,24 +160,21 @@ function createServer(opt) {
       // })
     })
 
-    var currentExercise
+    var currentExercise = function (req, res, next) { next() };
     var exercise = function (name, route, req, res) {
       if (/\.js$/.test(req.url)) {
+        console.log(req.url)
         route(req, res)
       } else {
         // start this example's server
         if (new RegExp(name+'$').test(req.url) || !currentExercise) {
           // requesting index.html
-          if (currentExercise) {
-            currentExercise.cleanup()
-          }
           try {
             currentExercise = require(path.join(exercisesDir, name, 'server.js'))
           } catch (err) {
             currentExercise = function (req, res, next) {
               next()
             }
-            currentExercise.cleanup = function () {}
           }
         }
         currentExercise(req, res, function () {
@@ -212,10 +212,8 @@ function createServer(opt) {
       , bundler: function (path) {
         var b = browserify(path)
         b.transform(require.resolve('brfs'))
+        opt.mainBundler(b)
         exBundles.forEach(function (fn) {
-          fn(b)
-        })
-        exFileBundles.forEach(function (fn) {
           fn(b)
         })
         return {stdout: b.bundle(), stderr: through()}
@@ -263,7 +261,9 @@ function createServer(opt) {
         }
       }
 
-      return menu(req, res)
+      currentExercise(req, res, function () {
+        menu(req, res)
+      })
     }).listen(mainPort, function(err) {
       if (err) throw err
 
