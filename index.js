@@ -27,21 +27,9 @@ function inject(src) {
 
   var script = '<script type=\"text/javascript\" src="' + src + '"><\/script>\n'
 
-  var firstScriptTag = tr1.createStream('script', { outer: true })
   var bodyTag = tr2.createStream('body')
 
-  firstScriptTag // Inject the new script before the first existing <script>
-    .pipe(through(
-      function (data) {
-        if (needToAddScript) {
-          this.queue(script)
-          needToAddScript = false
-        }
-        this.queue(data)
-      }))
-    .pipe(firstScriptTag)
-
-  bodyTag // If there were no <script>'s, insert the script right before </body>
+  bodyTag // insert the script right before </body>
     .pipe(through(
       null,
       function () {
@@ -103,7 +91,7 @@ function createServer(opt) {
     })
     var exFileBundles = exLinks.map(function (link, i) {
       var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
-      if (fs.statSync(bundlerPath).isFile()) {
+      if (fs.existsSync(bundlerPath)) {
         // console.log(bundlerPath)
         return require(bundlerPath)
       }
@@ -134,7 +122,7 @@ function createServer(opt) {
         w.add(file)
         w.require(file, { expose: path.basename(file) })
       })
-      opt.mainBundler(w)
+      // opt.mainBundler(w)
       exFileBundles.forEach(function (fn) {
         fn(w)
       })
