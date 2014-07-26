@@ -1,4 +1,5 @@
 @import ./reset.css;
+@import ./syntax.css;
 
 body {
   font-family: 'Source Code Pro', monospace;
@@ -159,6 +160,7 @@ body .bw-sidebar-sidebar {
   position: absolute;
   top: 4px; right: 4px;
   list-style-type: none;
+  z-index: 10;
 }
 
 .buttons .button-home,
