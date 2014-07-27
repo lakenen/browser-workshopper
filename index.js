@@ -119,7 +119,7 @@ function createServer(opt) {
       }
       var w = watchify()
       exFiles[i].forEach(function (file) {
-        w.add(file)
+        // w.add(file)
         w.require(file, { expose: path.basename(file) })
       })
       // opt.mainBundler(w)
@@ -134,7 +134,9 @@ function createServer(opt) {
       return function (req, res) {
         console.log('bundling', link)
         res.setHeader('content-type', 'text/javascript')
-        w.bundle().pipe(res)
+        w.bundle().on('error', function (e) {
+          console.error(e)
+        }).pipe(res)
       }
       // return beefy({
       //     cwd: path.join(root, link)
