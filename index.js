@@ -200,7 +200,8 @@ function createServer(opt) {
       , watchify: false
       , live: true
       , bundler: function (path) {
-        var b = browserify(path)
+        var b = browserify(opt.bundlerOpts || {})
+        b.add(path)
         b.transform(require.resolve('brfs'))
         opt.mainBundler(b)
         exBundles.forEach(function (fn) {
