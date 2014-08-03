@@ -21,6 +21,7 @@
     "browser-workshopper-exercise": "https://github.com/lakenen/browser-workshopper-exercise/tarball/wip",
     "browser-workshopper-menu": "https://github.com/lakenen/browser-workshopper-menu/tarball/wip",
     "browserify": "^4.2.1",
+    "center-text": "^0.1.0",
     "chalk": "^0.5.1",
     "duplexer": "^0.1.1",
     "envify": "^2.0.0",

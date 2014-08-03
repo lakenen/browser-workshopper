@@ -37,12 +37,9 @@ function createServer(opt) {
 
   opt.mainBundler = opt.mainBundler || function () {}
 
-  console.log(tmpDir)
   mkdirp.sync(tmpDir)
 
-  console.error(fs.readFileSync(
-    __dirname + '/intro.txt', 'utf8'
-  ))
+  printIntro(opt.title)
 
   answers(exercises, exercisesDir, root, function(err) {
     console.error('Done!')
@@ -243,4 +240,14 @@ function createServer(opt) {
       events.pipe(client)
     })
   }
+}
+
+
+function printIntro(title) {
+  var defaultTitle = 'browser workshopper'
+  var center = require('center-text')
+  title = center(title, { columns: defaultTitle.length })
+  console.error(fs.readFileSync(
+    __dirname + '/intro.txt', 'utf8'
+  ).replace(defaultTitle, title))
 }
