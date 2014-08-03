@@ -7,6 +7,7 @@ var extend    = require('extend')
 var inject    = require('./lib/inject-script')
 var opener    = require('opener')
 var mkdirp    = require('mkdirp')
+var async     = require('async')
 var beefy     = require('beefy')
 var chalk     = require('chalk')
 var brfs      = require('brfs')
@@ -41,17 +42,17 @@ function createServer(opt) {
 
   printIntro(opt.title)
 
-  answers(exercises, exercisesDir, root, function(err) {
-    console.error('Done!')
-    console.error('Booting up the workshop in your browser in just a second...')
-    console.error('')
-    setTimeout(loadedAnswers, 1000)
-  })
+  opt.exercisesDir = exercisesDir
+  opt.mainBundler = opt.mainBundler || function () {}
 
-  function loadedAnswers(err) {
-    if (err) throw err
+  function setupSolutions(cb) {
+    answers(exercises, exercisesDir, root, cb)
+  }
+
+  function setupBundles(cb) {
     var exNames  = Object.keys(exercises)
     var exLinks  = exNames.map(function(k) { return exercises[k] })
+
     var exFiles  = exLinks.map(function(link) {
       var dir = path.resolve(root, link)
 
@@ -59,10 +60,10 @@ function createServer(opt) {
         return path.resolve(dir, name)
       })
     })
+
     var exFileBundles = exLinks.map(function (link, i) {
       var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
       if (fs.existsSync(bundlerPath)) {
-        // console.log(bundlerPath)
         return require(bundlerPath)
       }
       return function () {}
@@ -75,9 +76,7 @@ function createServer(opt) {
         exFileBundles[i](b)
       }
     })
-    // .reduce(function (a, b) {
-    //   return a.concat(b)
-    // })
+
     var exRoutes = exLinks.map(function(link, i) {
       if (exFiles[i].length === 0) {
         return function (req, res) {
@@ -106,16 +105,6 @@ function createServer(opt) {
           console.error(e)
         }).pipe(res)
       }
-      // return beefy({
-      //     cwd: path.join(root, link)
-      //   , entries: exFiles[i].map(path.basename)
-      //   , live: true
-      //   , watchify: false
-      //   , quiet: false
-      //   , bundlerFlags: exFiles[i].map(function (file) {
-      //       return ['-r', file + ':' + path.basename(file)]
-      //     }).reduce(function (a, b) { return a.concat(b) })
-      // })
     })
 
     var currentExercise = function (req, res, next) { next() };
@@ -145,36 +134,6 @@ function createServer(opt) {
       }
     }
 
-    var main = beefy({
-        cwd: path.join(__dirname, 'browser')
-      , entries: ['main.js']
-      , quiet: false
-      , watchify: false
-      , live: true
-      , bundler: function (path) {
-          var b = browserify(opt.bundlerOpts || {})
-          b.add(path)
-          opt.mainBundler(b)
-          exBundles.forEach(function (fn) {
-            fn(b)
-          })
-          b.transform(require('envify/custom')({
-              title: opt.title
-            , exercises: exercisesDir
-          }))
-          b.transform(require.resolve('brfs'))
-          return {stdout: b.bundle(), stderr: through()}
-        }
-    })
-
-    // var b = browserify([path.resolve(__dirname, 'lib/main.js')])
-    // b.transform({global:true},'/Users/clakenen/workspace/lakenen/forked/brfs/')
-    // b.transform(require.resolve('html-browserify'))
-    // exBundles.forEach(function (args) {
-    //   b.require.apply(b, args)
-    // })
-    // b.bundle().pipe(fs.createWriteStream(path.resolve(tmpDir, 'main.js')))
-
     var server = http.createServer(function(req, res) {
       var uri = url.parse(req.url).pathname
       var paths = uri.split('/').filter(Boolean)
@@ -186,9 +145,6 @@ function createServer(opt) {
       }
 
       if (uri === '/main.js') {
-        // res.setHeader('content-type', 'text/javascript')
-        // fs.createReadStream(path.resolve(tmpDir, 'main.js'))
-        //   .pipe(res)
         main(req, res)
         return
       }
@@ -211,9 +167,14 @@ function createServer(opt) {
       if (err) throw err
 
       var url = 'http://localhost:'+mainPort
-      opener(url)
-      console.log(chalk.yellow('WORKSHOP URL:'), chalk.underline.blue(url))
-      console.log()
+
+      console.error('Done!')
+      console.error('Booting up the workshop in your browser in just a second...')
+      setTimeout(function () {
+        opener(url)
+        console.log(chalk.yellow('WORKSHOP URL:'), chalk.underline.blue(url))
+        console.log()
+      }, 1000)
     })
 
     sse.install(server)
@@ -232,4 +193,85 @@ function printIntro(title) {
   console.error(fs.readFileSync(
     __dirname + '/intro.txt', 'utf8'
   ).replace(defaultTitle, title))
+
+}
+
+function createMainRoute(opt, tmpDir, exBundles, cb) {
+  function bundleOpts(b) {
+    b.transform(require.resolve('brfs'))
+    opt.mainBundler(b)
+    exBundles.forEach(function (fn) {
+      fn(b)
+    })
+  }
+
+  if (DEV) {
+    return cb(null, beefy({
+        cwd: path.join(__dirname, 'lib')
+      , entries: ['main.js']
+      , quiet: false
+      , watchify: false
+      , live: true
+      , bundler: function (path) {
+        var b = browserify(opt.bundlerOpts || {})
+        b.add(path)
+        bundleOpts(b)
+        return {stdout: b.bundle(), stderr: through()}
+      }
+    }))
+  }
+
+  var b = browserify([path.resolve(__dirname, 'lib/main.js')])
+  var srcPath = path.resolve(tmpDir, 'main.js')
+  var file = fs.createWriteStream(srcPath)
+  bundleOpts(b)
+  b.bundle().pipe(file).on('end', function (err) {
+     cb(err, function (req, res, next) {
+      res.setHeader('content-type', 'text/javascript')
+      fs.createReadStream(srcPath).pipe(res)
+      if (next) next()
+    })
+  })
+}
+
+function createMenuRoute(opt, tmpDir, cb) {
+  if (DEV) {
+    return cb(null, beefy({
+        cwd: path.join(__dirname, 'menu')
+      , entries: ['menu.js']
+      , quiet: false
+      , watchify: false
+      , bundlerFlags: []
+        .concat(['-t', require.resolve('brfs')])
+        .concat([
+          '-t', '['
+          , require.resolve('envify')
+          , '--title', opt.title
+          , '--exercises', opt.exercisesDir
+          , ']'
+        ])
+    }))
+  }
+
+  var b = browserify([path.resolve(__dirname, 'menu/menu.js')])
+  var srcPath = path.resolve(tmpDir, 'menu.js')
+  var file = fs.createWriteStream(srcPath)
+
+  b.transform(require.resolve('brfs'))
+  b.transform(require('envify/custom')({
+    title: opt.title,
+    exercises: opt.exercisesDir
+  }))
+  b.bundle().pipe(file).on('end', function (err) {
+    cb(err, function (req, res, next) {
+      if (req.url === '/menu.js') {
+        res.setHeader('content-type', 'text/javascript')
+        fs.createReadStream(srcPath).pipe(res)
+      } else {
+        res.setHeader('content-type', 'text/html')
+        fs.createReadStream(__dirname + '/menu/index.html').pipe(res)
+      }
+      if (next) next()
+    })
+  })
 }
