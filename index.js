@@ -4,6 +4,7 @@ var answers   = require('./lib/create-answers')
 var through   = require('through')
 var styles    = require('./style')
 var extend    = require('extend')
+var inject    = require('./lib/inject-script')
 var opener    = require('opener')
 var mkdirp    = require('mkdirp')
 var beefy     = require('beefy')
@@ -15,35 +16,7 @@ var url       = require('url')
 var sse       = require('sse-stream')('/sse')
 var fs        = require('fs')
 
-
-var trumpet = require('trumpet')
-  , duplexer = require('duplexer')
-  , through = require('through');
-
-function inject(src) {
-  var tr1 = trumpet()
-    , tr2 = trumpet()
-    , needToAddScript = true
-
-  var script = '<script type=\"text/javascript\" src="' + src + '"><\/script>\n'
-
-  var bodyTag = tr2.createStream('body')
-
-  bodyTag // insert the script right before </body>
-    .pipe(through(
-      null,
-      function () {
-        if (needToAddScript) {
-          this.queue(script)
-        }
-        this.queue(null)
-      }))
-    .pipe(bodyTag)
-
-  tr1.pipe(tr2)
-
-  return duplexer(tr1, tr2)
-}
+var DEV = process.env.NODE_ENV === 'development'
 
 var mainPort = 12492
 var closeWindow = fs.readFileSync(
