@@ -172,11 +172,11 @@ function createServer(opt) {
       , bundler: function (path) {
         var b = browserify(opt.bundlerOpts || {})
         b.add(path)
-        b.transform(require.resolve('brfs'))
         opt.mainBundler(b)
         exBundles.forEach(function (fn) {
           fn(b)
         })
+        b.transform(require.resolve('brfs'))
         return {stdout: b.bundle(), stderr: through()}
       }
     })
