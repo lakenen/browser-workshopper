@@ -20,7 +20,7 @@ var DEV = process.env.NODE_ENV === 'development'
 
 var mainPort = 12492
 var closeWindow = fs.readFileSync(
-  path.join(__dirname, 'lib/close-window.html')
+  path.join(__dirname, 'browser/close-window.html')
 )
 
 module.exports = createServer
@@ -140,7 +140,7 @@ function createServer(opt) {
         currentExercise(req, res, function () {
           // serve index.html
           res.setHeader('content-type', 'text/html')
-          fs.createReadStream(path.resolve(__dirname, 'lib/index.html'))
+          fs.createReadStream(path.resolve(__dirname, 'browser/index.html'))
             .pipe(inject(name + '.js'))
             .pipe(res)
         })
@@ -148,7 +148,7 @@ function createServer(opt) {
     }
 
     var main = beefy({
-        cwd: path.join(__dirname, 'lib')
+        cwd: path.join(__dirname, 'browser')
       , entries: ['main.js']
       , quiet: false
       , watchify: false

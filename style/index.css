@@ -2,7 +2,7 @@
 @import ./syntax.css;
 
 body {
-  font-family: 'Source Code Pro', monospace;
+  font-family: 'Share Tech Mono', monospace;
 
   overflow: hidden;
   position: absolute;
@@ -12,35 +12,122 @@ body {
   background: #000;
   margin: 0;
   padding: 0;
-}
 
-body .bw-sidebar-content {
-  font-family: 'Source Code Pro', monospace;
   font-size: 12px;
   line-height: 1.5em;
 }
 
-body .bw-sidebar-sidebar {
-  width: 420px;
+.exercise {
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction: column;
+  height: 100%;
 }
 
-.bw-sidebar-content p {
+.exercise .header {
+  background-color: #363d43;
+  border-bottom: 1px solid #24292c;
+  display: flex;
+}
+
+.exercise .header .button-group {
+  padding: 1em;
+  flex: 1;
+}
+
+.exercise .main-content {
+  background-color: #4e565c;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.exercise .main-left {
+  flex: 1;
+  background-color: #3E464C;
+}
+
+.exercise .main-right {
+  display: flex;
+  flex: 2;
+  flex-flow: column wrap;
+  flex-direction: column;
+}
+
+.exercise .exercise-content {
+  flex: 1;
+  overflow: auto;
+  border-bottom: 1px solid #24292c;
+}
+
+.exercise .console {
+  flex: 0 auto;
+  height: 300px;
+  overflow: auto;
+}
+
+.exercise .status-display {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+}
+
+.console {
+  overflow: auto;
+  background-color: #161d23;
+  color: #fff;
+  padding: 1em;
+  white-space: pre;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.header a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 2px;
+}
+
+.header a:hover,
+.header a:focus {
+  background: #527cff;
+  outline: 0;
+}
+
+.header a[disabled] {
+  background: transparent;
+  opacity: 0.5;
+}
+
+.sidebar {
+  padding: 1em;
+  border-right: 1px solid #24292c;
+  overflow: auto;
+}
+
+.sidebar p {
   margin-bottom: 1em;
 }
 
-.bw-sidebar-content a {
+.sidebar a {
   color: #5ED7F7;
   text-decoration: none;
   border-bottom: 1px solid #5ED7F7;
 }
 
-.bw-sidebar-content pre,
-.bw-sidebar-content code {
+.sidebar pre,
+.sidebar code {
   font-family: 'Source Code Pro', monospace;
   font-weight: 200;
 }
 
-.bw-sidebar-content h1 {
+.sidebar h1 {
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
@@ -49,13 +136,13 @@ body .bw-sidebar-sidebar {
   border-bottom: 1px dotted #AAA;
 }
 
-.bw-sidebar-content hr {
+.sidebar hr {
   margin: 1.25em 0;
   height: 0;
   border-top: 1px dotted #AAA;
 }
 
-.bw-sidebar-content pre {
+.sidebar pre {
   margin-bottom: 1em;
   overflow-x: auto;
   overflow-y: none;
@@ -63,30 +150,30 @@ body .bw-sidebar-sidebar {
   padding: 1em;
 }
 
-.bw-sidebar-content pre + h2,
-.bw-sidebar-content pre + h3 {
+.sidebar pre + h2,
+.sidebar pre + h3 {
   margin-top: 2em;
 }
 
-.bw-sidebar-content code {
+.sidebar code {
   color: #AAA;
 }
 
-.bw-sidebar-content pre > code {
+.sidebar pre > code {
   color: #FFF;
 }
-.bw-sidebar-content ul,
-.bw-sidebar-content ol {
+.sidebar ul,
+.sidebar ol {
   margin-bottom: 1em;
 }
 
-.bw-sidebar-content ul > li:before {
+.sidebar ul > li:before {
   content: '\00a0* ';
   font-weight: bold;
   opacity: 0.5;
 }
 
-.bw-sidebar-content ul > li {
+.sidebar ul > li {
   text-indent: -21px;
   position: relative;
   left: 21px;
@@ -94,7 +181,7 @@ body .bw-sidebar-sidebar {
   margin-bottom: 0.25em;
 }
 
-.bw-sidebar-content ol > li {
+.sidebar ol > li {
   margin-left: 2em;
   margin-bottom: 0.5em;
 }
@@ -105,28 +192,28 @@ body .bw-sidebar-sidebar {
   right: 0; bottom: 0;
 }
 
-.bw-sidebar-content .def { border-bottom: 1px dotted rgba(255,255,255,0.5); }
-.bw-sidebar-content .hljs-preprocessor {
+.sidebar .def { border-bottom: 1px dotted rgba(255,255,255,0.5); }
+.sidebar .hljs-preprocessor {
   color: #FF6E57;
 }
-.bw-sidebar-content .hljs-comment .def { border-bottom: none; }
-.bw-sidebar-content .hljs-preprocessor .def { border-bottom: none; }
-.bw-sidebar-content .hljs-number .def { border-bottom: none; }
-.bw-sidebar-content .hljs-comment {
+.sidebar .hljs-comment .def { border-bottom: none; }
+.sidebar .hljs-preprocessor .def { border-bottom: none; }
+.sidebar .hljs-number .def { border-bottom: none; }
+.sidebar .hljs-comment {
   color: #AAA;
 }
-.bw-sidebar-content .hljs-keyword .def { border-bottom-color: rgba(255, 226, 95, 0.5); }
-.bw-sidebar-content .hljs-keyword {
+.sidebar .hljs-keyword .def { border-bottom-color: rgba(255, 226, 95, 0.5); }
+.sidebar .hljs-keyword {
   color: #FFE25F;
 }
-.bw-sidebar-content .hljs-number {
+.sidebar .hljs-number {
   color: #58FF8B;
 }
-.bw-sidebar-content .hljs-literal {
+.sidebar .hljs-literal {
   color: #FF6E57;
 }
 
-.bw-sidebar-content .warn {
+.sidebar .warn {
   color: #FF6E57;
 }
 

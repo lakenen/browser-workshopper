@@ -2,7 +2,8 @@ var getScript = require('script-load')
 try {
   var exerciseData = require(getExerciseName())
   require('browser-workshopper-exercise')(exerciseData)
-  require('./live-reload')(loadExerciseFiles)
+  require('./realtime')(loadExerciseFiles)
+  document.querySelector('.exercise').style.display = ''
 } catch (err) {
   require('./menu')({
       exercises: require(process.env.exercises)
