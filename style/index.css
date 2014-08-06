@@ -2,7 +2,7 @@
 @import ./syntax.css;
 
 body {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Source Code Pro', monospace;
 
   overflow: hidden;
   position: absolute;
@@ -83,8 +83,25 @@ body {
   box-sizing: border-box;
 }
 
-.button {
+.button, .link {
   cursor: pointer;
+}
+.button {
+  font-family: 'Source Code Pro', monospace;
+  padding: 1em;
+  min-width: 80px;
+  border: 0;
+  border-radius: 0;
+  color: #fff;
+  font-weight: bold;
+}
+.button:hover,
+.button:focus {
+  outline: 2px solid #fff;
+}
+.verify-btn {
+  background-color: #527cff;
+  outline: 2px solid #305add;
 }
 
 .header a {
