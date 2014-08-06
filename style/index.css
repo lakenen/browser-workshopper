@@ -24,13 +24,13 @@ body {
   height: 100%;
 }
 
-.exercise .header {
+.header {
   background-color: #363d43;
   border-bottom: 1px solid #24292c;
   display: flex;
 }
 
-.exercise .main-content {
+.main-content {
   background-color: #4e565c;
   width: 100%;
   display: flex;
@@ -38,15 +38,16 @@ body {
   flex: 1;
 }
 
-.exercise .main-left {
+.main-left {
   flex: 1 auto;
   max-width: 50%;
   background-color: #3E464C;
   border-right: 1px solid  #24292c;
   box-sizing: border-box;
+  min-width: 80px;
 }
 
-.exercise .main-right {
+.main-right {
   display: flex;
   flex: 2;
   flex-flow: column;
@@ -54,25 +55,59 @@ body {
   margin-left: -4px;
 }
 
-.exercise .exercise-content {
+.display {
   flex: 1 auto;
   overflow: auto;
   position: relative;
   padding: 1em;
   border-bottom: 1px solid  #24292c;
   box-sizing: border-box;
+  min-height: 80px;
 }
 
-.exercise .console {
+.console {
   flex: 1 auto;
   overflow: auto;
   margin-top: -4px;
 }
 
-.exercise .status-display {
+.status-display {
   position: absolute;
   bottom: 1em;
   right: 1em;
+}
+
+.sidebar-disabled .sidebar {
+  display: none;
+}
+.sidebar-disabled .slider-column {
+  display: none;
+}
+.sidebar-disabled .main-right {
+  margin-left: 0;
+}
+.display-disabled .display {
+  display: none;
+}
+.display-disabled .console {
+  margin-top: 0;
+}
+.display-disabled .slider-row {
+  display: none;
+}
+.console-disabled .console {
+  display: none;
+}
+.console-disabled .slider-row {
+  display: none;
+}
+.console-disabled .display {
+  min-height: 100% !important;
+  max-height: 100% !important;
+}
+.console-disabled.display-disabled .sidebar {
+  max-width: 100% !important;
+  min-width: 100% !important;
 }
 
 .slider {
@@ -140,6 +175,10 @@ body {
 .button-group.right {
   text-align: right;
   justify-content: flex-end;
+}
+
+.toggle-buttons .button.disabled {
+  opacity: 0.5;
 }
 
 .verify-btn {
