@@ -8,18 +8,24 @@
 <body>
   <div class="exercise" style="display: none">
     <div class="header">
-      <div class="button-group" style="text-align: left">
+      <div class="button-group left">
         <a class="link" href="/">&lt;- QUIT EXERCISE</a>
       </div>
-      <div class="button-group"></div>
-      <div class="button-group" style="text-align: right">
+      <div class="button-group center">
+        <button class="button toggle enabled instructions-btn">INSTRUCTIONS</button>
+        <button class="button toggle enabled display-btn">DISPLAY</button>
+        <button class="button toggle enabled console-btn">CONSOLE</button>
+      </div>
+      <div class="button-group right">
         <a class="link" disabled>COMPLETE</a>
       </div>
     </div>
     <div class="main-content">
       <div class="main-left sidebar"></div>
+      <div class="slider slider-column"></div>
       <div class="main-right">
         <div class="exercise-content"></div>
+        <div class="slider slider-row"></div>
         <div class="console"></div>
         <div class="status-display">
           <span class="status"></span>

@@ -39,7 +39,7 @@ module.exports = function (opts) {
 
     return [
       newname
-    , progress.get(dir) ? '[COMPLETE]' : '          '
+    , progress.getProgress(dir) ? '[COMPLETE]' : '          '
     ]
   }), {
     distance: 10
