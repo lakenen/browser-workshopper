@@ -1,14 +1,16 @@
 var getScript = require('script-load')
 try {
-  var exerciseData = require(getExerciseName())
-  require('browser-workshopper-exercise')(exerciseData)
-  require('./realtime')(loadExerciseFiles)
-  document.querySelector('.exercise').style.display = ''
+  var exerciseName = getExerciseName()
+  if (exerciseName) {
+    var exerciseData = require(exerciseName)
+    require('browser-workshopper-exercise')(exerciseData)
+    require('./realtime')(loadExerciseFiles)
+    document.querySelector('.exercise').style.display = ''
+  } else {
+    showMenu()
+  }
 } catch (err) {
-  require('./menu')({
-      exercises: require(process.env.exercises)
-    , title: process.env.title || ''
-  })
+  showMenu()
 }
 
 function getExerciseName() {
@@ -19,5 +21,12 @@ function getExerciseName() {
 function loadExerciseFiles() {
   getScript(getExerciseName() + '.js', function () {
     console.log('loaded script!')
+  })
+}
+
+function showMenu() {
+  require('./menu')({
+      exercises: require(process.env.exercises)
+    , title: process.env.title || ''
   })
 }
