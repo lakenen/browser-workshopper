@@ -147,22 +147,6 @@ function createServer(opt) {
       }
     }
 
-    var menu = beefy({
-        cwd: path.join(__dirname, 'menu')
-      , entries: ['index.js']
-      , quiet: false
-      , watchify: false
-      , bundlerFlags: []
-        .concat(['-t', require.resolve('brfs')])
-        .concat([
-          '-t', '['
-          , require.resolve('envify')
-          , '--title', opt.title
-          , '--exercises', exercisesDir
-          , ']'
-        ])
-    })
-
     var main = beefy({
         cwd: path.join(__dirname, 'lib')
       , entries: ['main.js']
@@ -170,15 +154,19 @@ function createServer(opt) {
       , watchify: false
       , live: true
       , bundler: function (path) {
-        var b = browserify(opt.bundlerOpts || {})
-        b.add(path)
-        opt.mainBundler(b)
-        exBundles.forEach(function (fn) {
-          fn(b)
-        })
-        b.transform(require.resolve('brfs'))
-        return {stdout: b.bundle(), stderr: through()}
-      }
+          var b = browserify(opt.bundlerOpts || {})
+          b.add(path)
+          opt.mainBundler(b)
+          exBundles.forEach(function (fn) {
+            fn(b)
+          })
+          b.transform(require('envify/custom')({
+              title: opt.title
+            , exercises: exercisesDir
+          }))
+          b.transform(require.resolve('brfs'))
+          return {stdout: b.bundle(), stderr: through()}
+        }
     })
 
     // var b = browserify([path.resolve(__dirname, 'lib/main.js')])
@@ -223,7 +211,7 @@ function createServer(opt) {
       }
 
       currentExercise(req, res, function () {
-        menu(req, res)
+        main(req, res)
       })
     }).listen(mainPort, function(err) {
       if (err) throw err
