@@ -80,7 +80,7 @@ module.exports = function(ex) {
     }
 
     setState('testing')
-    console.log('TESTING...')
+    console.warn('TESTING...')
 
     clearTimeout(timeoutTID)
     ex.test(function(err, result) {
@@ -138,7 +138,7 @@ function setupNotifications() {
   window.onerror = function(message, source, line, ch, err) {
     if (err.message === previous) return
     var error = notify(10000)
-    error.innerHTML = previous = String(err.message)
+    error.innerHTML = previous = String(err.message || 'unknown error')
     console.error('ERROR: ' + previous)
     if (document.body.classList.contains('testing')) {
       setState('failed')
