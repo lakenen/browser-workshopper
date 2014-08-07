@@ -31,11 +31,10 @@ marked.setOptions({
 })
 
 module.exports = function(ex) {
-  setupPage()
+  setupPage(ex)
   setupNotifications()
   setupButtons()
   setupSliders()
-
 
   console.log('LOADING EXERCISE...')
 
@@ -65,11 +64,16 @@ module.exports = function(ex) {
   }
   var verifyButton = document.querySelector('.verify-btn')
     , retryButton = document.querySelector('.retry-btn')
+    , continueLink = document.querySelector('.continue-link')
 
   function init() {
     console.log('DONE!')
     verifyButton.addEventListener('click', runTest)
     retryButton.addEventListener('click', runTest)
+    continueLink.addEventListener('click', function () {
+      document.body.classList.remove('success')
+      document.body.classList.add('continue')
+    })
   }
 
   function runTest() {
@@ -90,10 +94,9 @@ module.exports = function(ex) {
         setState('passed')
         console.ok('PASSED!')
         progress.setProgress(ex.dirname, true)
-        // timeoutTID = setTimeout(function () {
-        //   document.body.classList.add('success')
-        //   // homeBtn.classList.add('flashing')
-        // }, 1000)
+        timeoutTID = setTimeout(function () {
+          document.body.classList.add('success')
+        }, 1000)
       } else {
         // TRY AGAIN?
         setState('failed')
@@ -196,18 +199,25 @@ function contains(el, child) {
   return false
 }
 
-function setupPage() {
-  var successEl = document.querySelector('.success-msg')
+function setupPage(ex) {
+  var successEl = document.querySelector('.success-container')
     , button = document.querySelector('.success-hide-btn')
-  document.addEventListener('click', function (ev) {
+    , overlay = document.querySelector('.success-overlay')
+    , nextExerciseLink = document.querySelector('.next-exercise-link')
+  overlay.addEventListener('click', function (ev) {
     if (contains(successEl, ev.target)) {
       return
     }
-    document.body.classList.remove('success')
+    document.body.classList.remove('continue')
   }, false)
   button.addEventListener('click', function (ev) {
-    document.body.classList.remove('success')
+    document.body.classList.remove('continue')
   }, false)
+  if (ex.next) {
+    nextExerciseLink.href = '/' + ex.next
+  } else {
+    nextExerciseLink.style.display = 'none'
+  }
 }
 
 // homeBtn/openBtn Buttons

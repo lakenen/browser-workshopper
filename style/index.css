@@ -209,6 +209,23 @@ body {
   border-bottom-color: #527cff;
 }
 
+.continue-link {
+  display: none;
+}
+.passed .continue-link {
+  display: block;
+}
+.success .continue-link {
+  animation: flashing 2s infinite;
+}
+.continue .continue-link {
+  display: none;
+}
+
+@keyframes flashing {
+  50% { color: #527CFF; }
+}
+
 .status-display {
   position: absolute;
   overflow: hidden;
@@ -296,10 +313,6 @@ a:focus {
 a[disabled] {
   background: transparent;
   opacity: 0.5;
-}
-
-.link[disabled] {
-  display: none;
 }
 
 .sidebar {
@@ -434,10 +447,6 @@ a[disabled] {
   margin-bottom: 0.5em;
   width: 300px;
   background: #FF6E57;
-
-  -moz-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
-  -ms-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
-  -o-transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
   transition: opacity 0.5s, bottom 0.5s, top 0.5s, left 0.5s, right 0.5s;
 }
 
@@ -462,12 +471,32 @@ a[disabled] {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0.25);
   transition: opacity 0.25s ease 0s, visibility 0 ease 0.25s;
 }
 .success-container {
   position: relative;
   background: #527cff;
   padding: 1em 2em;
+}
+
+.success-links {
+  padding: 0 2em 3em;
+}
+
+.success-links .link {
+  border-bottom: 1px solid #fff;
+  height: 15px;
+  display: inline-block;
+  padding: 0;
+  margin: 0.5em 0;
+}
+.success-links .link:hover,
+.success-links .link:focus {
+  outline: 0;
+  padding: 0 2px;
+  background: #fff;
+  color: #527cff;
 }
 
 .success-msg {
@@ -493,10 +522,10 @@ a[disabled] {
   text-align: center;
 }
 
-.success .success-overlay {
+.continue .success-overlay {
   visibility: visible;
   opacity: 1;
-  transition: opacity 0.25s ease 0.75s, visibility 0 ease 0.75s;
+  transition: opacity 0.25s, visibility 0;
 }
 
 .success-hide-btn {

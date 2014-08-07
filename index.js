@@ -70,10 +70,7 @@ function createServer(opt) {
 
     var exBundles = exLinks.map(function(link, i) {
       var exPath = path.join(exercisesDir, link, 'index.js')
-      // return ['-r', exPath+':'+link]
-      // return [exPath, {expose: link}]
       return function (b) {
-        // console.log(link)
         b.require(exPath, { expose: link })
         exFileBundles[i](b)
       }
