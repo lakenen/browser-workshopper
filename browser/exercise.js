@@ -1,5 +1,4 @@
 var progress    = require('browser-workshopper-progress')
-  , sidebar     = require('browser-workshopper-sidebar')
   , highlight   = require('highlight.js').highlight
   , console     = require('./console')
   , apprise     = require('apprise')
@@ -45,7 +44,7 @@ module.exports = function(ex) {
     , 'Share Tech Mono': [400]
   })
 
-  var side = sidebar()
+  var sidebarEl = document.querySelector('.sidebar')
 
   if (ex.title) {
     document.title = ex.title
@@ -54,8 +53,8 @@ module.exports = function(ex) {
   document.body.classList.add(ex.dirname)
 
   if (ex.description) {
-    side.content.innerHTML = marked(ex.description)
-    openHook(side.content)
+    sidebarEl.innerHTML = marked(ex.description)
+    openHook(sidebarEl)
   }
 
   if (ex.success) {
