@@ -139,10 +139,11 @@ function setupNotifications() {
 
   var previous = null
   window.onerror = function(message, source, line, ch, err) {
+    var msg = String(err.message || 'unknown error')
+    console.error('ERROR: ' + msg)
     if (err.message === previous) return
     var error = notify(10000)
-    error.innerHTML = previous = String(err.message || 'unknown error')
-    console.error('ERROR: ' + previous)
+    error.innerHTML = previous = msg
     if (document.body.classList.contains('testing')) {
       setState('failed')
     }
