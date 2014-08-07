@@ -1,9 +1,11 @@
 var getScript = require('script-load')
+var console = require('./console')
+
 try {
   var exerciseName = getExerciseName()
   if (exerciseName) {
     var exerciseData = require(exerciseName)
-    require('browser-workshopper-exercise')(exerciseData)
+    require('./exercise')(exerciseData)
     require('./realtime')(loadExerciseFiles)
     document.querySelector('.exercise').style.display = ''
   } else {
@@ -19,8 +21,9 @@ function getExerciseName() {
 }
 
 function loadExerciseFiles() {
+  console.info('RELOADING SOLUTION...')
   getScript(getExerciseName() + '.js', function () {
-    console.log('loaded script!')
+    console.info('DONE!')
   })
 }
 

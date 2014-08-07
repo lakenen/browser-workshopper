@@ -72,16 +72,27 @@ body {
   background-color: #363d43;
   /*background-color: #161d23;*/
   color: #fff;
+  font-weight: 700;
   padding: 1em;
   white-space: pre;
   width: 100%;
   box-sizing: border-box;
 }
 
-.status-display {
-  position: absolute;
-  bottom: 1em;
-  right: 1em;
+.console .info {
+  color: #629cff;
+}
+.console .ok {
+  color: #68e0a2;
+}
+.console .warn {
+  color: #dad26f;
+}
+.console .error {
+  color: #ff5c53;
+}
+.console .debug {
+  color: #889;
 }
 
 .sidebar-disabled .sidebar {
@@ -134,6 +145,7 @@ body {
 
 .button, .link {
   cursor: pointer;
+  text-transform: uppercase;
 }
 .button {
   font-family: 'Source Code Pro', monospace;
@@ -141,7 +153,7 @@ body {
   min-width: 80px;
   border: 0;
   border-radius: 0;
-  color: #34363B;
+  color: #fff;
   font-weight: 700;
   background-color: #A9B0C2;
   border: 2px solid #A9B0C2;
@@ -157,32 +169,116 @@ body {
   display: flex;
   align-items: center;
   white-space: nowrap;
-  padding: 1em;
-  flex: 1;
+  padding: 1em 2em;
 }
 .button-group.left {
+  padding-left: 1em;
   text-align: left;
   justify-content: flex-start;
 }
 .button-group.center {
-  flex: 2;
-  text-align: center;
-  justify-content: center;
+  border-left: 1px solid #24292c;
+  border-right: 1px solid #24292c;
+  text-align: left;
+  justify-content: flex-start;
+  text-transform: uppercase;
+  color: #979E9D;
 }
 .button-group.right {
+  flex: 1;
   text-align: right;
   justify-content: flex-end;
 }
 
-.toggle-buttons .button.disabled {
-  opacity: 0.5;
+.toggle-buttons .link {
+  border-bottom: 4px solid #527cff;
+  display: inline-block;
+  margin: 0.6em;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  height: 22px;
+}
+.toggle-buttons .link.disabled {
+  color: #979E9D;
+  border-bottom-color: #525162;
+}
+.toggle-buttons .link.disabled:hover,
+.toggle-buttons .link.disabled:focus {
+  background-color: #527cff;
+  color: #fff;
+  border-bottom-color: #527cff;
 }
 
-.verify-btn {
+.status-display {
+  position: absolute;
+  overflow: hidden;
+  bottom: 1em;
+  right: 1em;
+  width: 135px;
+  height: 42px;
+  text-align: right;
+}
+
+.status-display .button {
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 42px;
+  margin: 0;
+  transition: transform 0.1s, visibility 0s;
+  visibility: hidden;
+}
+
+.status-display .verify-btn:hover,
+.status-display .verify-btn:focus,
+.status-display .retry-btn:hover,
+.status-display .retry-btn:focus {
+  outline: 0;
   color: #fff;
+  border: 2px solid #fff;
+}
+
+.status-display .verify-btn {
   background-color: #527cff;
   border: 2px solid #527cff;
+  top: 0;
+  visibility: visible;
 }
+
+.status-display .testing-btn {
+  background-color: #dad26f;
+  border: 2px solid #dad26f;
+}
+
+.status-display .success-btn {
+  background-color: #68e0a2;
+  border: 2px solid #68e0a2;
+}
+
+.status-display .retry-btn {
+  background-color: #ff5c53;
+  border: 2px solid #ff5c53;
+}
+
+.testing .verify-btn,
+.failed .verify-btn,
+.passed .verify-btn {
+  transform: translateY(-42px);
+  visibility: hidden;
+}
+.testing .testing-btn {
+  transform: translateY(-42px);
+  visibility: visible;
+}
+.passed .success-btn {
+  transform: translateY(-42px);
+  visibility: visible;
+}
+.failed .retry-btn {
+  transform: translateY(-42px);
+  visibility: visible;
+}
+
 
 a {
   color: white;
@@ -200,6 +296,10 @@ a:focus {
 a[disabled] {
   background: transparent;
   opacity: 0.5;
+}
+
+.link[disabled] {
+  display: none;
 }
 
 .sidebar {
@@ -330,7 +430,7 @@ a[disabled] {
   font-size: 12px;
   color: #34363B;
   padding: 1em;
-  margin-right: 0.5em;
+  margin-left: 0.5em;
   margin-bottom: 0.5em;
   width: 300px;
   background: #FF6E57;
@@ -347,7 +447,7 @@ a[disabled] {
 
 .notification.closing {
   opacity: 0;
-  right: -200px!important;
+  left: -200px!important;
 }
 
 .success-overlay {

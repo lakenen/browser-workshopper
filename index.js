@@ -105,6 +105,7 @@ function createServer(opt) {
         console.log('bundling', link)
         res.setHeader('content-type', 'text/javascript')
         w.bundle().on('error', function (e) {
+          console.error('error bundling', link)
           console.error(e)
         }).pipe(res)
       }
@@ -193,10 +194,6 @@ function createServer(opt) {
         //   .pipe(res)
         main(req, res)
         return
-      }
-      if (uri === '/live-reload') {
-        res.setHeader('content-type', 'application/json')
-        return res.end(JSON.stringify({ lastUpdate: lastUpdate }))
       }
 
       if (paths[0] === 'open') {

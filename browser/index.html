@@ -9,15 +9,16 @@
   <div class="exercise" style="display: none">
     <div class="header">
       <div class="button-group left">
-        <a class="link" href="/">&lt;- QUIT EXERCISE</a>
+        <a class="link" href="/">&lt;- Quit Exercise</a>
       </div>
       <div class="button-group center toggle-buttons">
-        <button class="button toggle" data-toggle="sidebar">INSTRUCTIONS</button>
-        <button class="button toggle" data-toggle="display">DISPLAY</button>
-        <button class="button toggle" data-toggle="console">CONSOLE</button>
+        Toggle:
+        <a class="link toggle" data-toggle="sidebar" href="javascript:;">Instructions</a>
+        <a class="link toggle" data-toggle="display" href="javascript:;">Display</a>
+        <a class="link toggle" data-toggle="console" href="javascript:;">Console</a>
       </div>
       <div class="button-group right">
-        <a class="link" disabled>COMPLETE</a>
+        <a class="link" disabled>Continue</a>
       </div>
     </div>
     <div class="main-content">
@@ -28,8 +29,10 @@
         <div class="slider slider-row"></div>
         <div class="console"></div>
         <div class="status-display">
-          <span class="status"></span>
-          <button class="button verify-btn">VERIFY SOLUTION</button>
+          <button class="button verify-btn">Verify Solution</button>
+          <button class="button testing-btn">Testing...</button>
+          <button class="button retry-btn">Retry?</button>
+          <button class="button success-btn">Success!</button>
         </div>
       </div>
     </div>
