@@ -478,6 +478,7 @@ a[disabled] {
   position: relative;
   background: #527cff;
   padding: 1em 2em;
+  max-width: 700px;
 }
 
 .success-links {
