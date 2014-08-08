@@ -242,6 +242,7 @@ function setupSliders() {
   var colPos = progress.get('column-position')
     , rowPos = progress.get('row-position')
 
+
   function slideColumnTo(x) {
     if (!x) return
     var max = window.innerWidth - 80
@@ -265,12 +266,14 @@ function setupSliders() {
     sidebar.style.maxWidth = ''
     sidebar.style.minWidth = ''
     progress.unset('column-position')
+    colPos = null
   }
 
   function resetRow() {
     display.style.maxHeight = ''
     display.style.minHeight = ''
     progress.unset('row-position')
+    rowPos = null
   }
 
   slideColumnTo(colPos)
