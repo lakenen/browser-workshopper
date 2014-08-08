@@ -499,13 +499,15 @@ a[disabled] {
   height: 13px;
   display: inline-block;
   padding: 2px;
-  margin: 0.5em 0;
 }
 .success-container a:hover,
 .success-container a:focus {
   outline: 0;
   background: #fff;
   color: #527cff;
+}
+.success-links .link {
+  margin: 0.5em 0;
 }
 
 .success-msg {
@@ -522,7 +524,6 @@ a[disabled] {
 .success-msg p {
   margin: 1em;
   color: #fff;
-  font-size: 14px;
   font-weight: normal;
 }
 
