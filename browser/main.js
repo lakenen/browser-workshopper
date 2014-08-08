@@ -1,5 +1,5 @@
 var getScript = require('script-load')
-var console = require('./console')
+require('./console')
 
 try {
   var exerciseName = getExerciseName()

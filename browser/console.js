@@ -1,24 +1,31 @@
-var el = document.querySelector('.console')
+var util = require('util')
+  , el = document.querySelector('.console')
   , PREFIX = '$&gt; '
 
 module.exports = {
-    info: function (html) {
-      this.log(addClass(html, 'info'))
+    info: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'info'))
     }
-  , debug: function (html) {
-      this.log(addClass(html, 'debug'))
+  , debug: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'debug'))
     }
-  , warn: function (html) {
-      this.log(addClass(html, 'warn'))
+  , warn: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'warn'))
     }
-  , error: function (html) {
-      this.log(addClass(html, 'error'))
+  , error: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'error'))
     }
-  , ok: function (html) {
-      this.log(addClass(html, 'ok'))
+  , ok: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'ok'))
     }
-  , log: function (html) {
-      this.print(PREFIX + html)
+  , log: function () {
+      var html = util.format.apply(this, arguments)
+      this.print(PREFIX + addClass(html, 'log'))
     }
   , print: function (html) {
       el.innerHTML += html + '\n'
@@ -28,4 +35,9 @@ module.exports = {
 
 function addClass(html, c) {
   return '<span class="' + c + '">' + html + '</span>'
+}
+
+if (!window._console) {
+  window._console = window.console
+  window.console = module.exports
 }

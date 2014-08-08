@@ -1,6 +1,5 @@
 var progress    = require('./progress')
   , highlight   = require('highlight.js').highlight
-  , console     = require('./console')
   , apprise     = require('apprise')
   , remove      = require('remove-element')
   , fonts       = require('google-fonts')
