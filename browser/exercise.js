@@ -100,6 +100,9 @@ module.exports = function(ex) {
       } else {
         // TRY AGAIN?
         setState('failed')
+        setTimeout(function () {
+          retryButton.focus()
+        }, 150)
       }
       if (err) throw (err.message ? err : new Error(err))
     })
