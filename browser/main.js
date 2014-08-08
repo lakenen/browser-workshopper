@@ -23,6 +23,10 @@ function getExerciseName() {
 function loadExerciseFiles() {
   console.info('RELOADING SOLUTION...')
   getScript(getExerciseName() + '.js', function () {
+    if (window.LOAD_FAILED) {
+      delete window.LOAD_FAILED
+      return
+    }
     console.info('DONE!')
   })
 }

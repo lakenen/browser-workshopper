@@ -98,11 +98,16 @@ function init(opt) {
         events.queue(path.basename(file))
       })
       return function (req, res) {
-        console.log('bundling', link)
+        if (DEV) {
+          console.log('bundling', link)
+        }
         res.setHeader('content-type', 'text/javascript')
         w.bundle().on('error', function (e) {
-          console.error('error bundling', link)
-          console.error(e)
+          if (DEV) {
+            console.error('error bundling', link)
+            console.error(e)
+          }
+          res.end('window.LOAD_FAILED = true; throw new Error("'+e.message+'")')
         }).pipe(res)
       }
     })
