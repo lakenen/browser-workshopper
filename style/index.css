@@ -74,9 +74,9 @@ body {
   color: #fff;
   font-weight: 700;
   padding: 1em;
-  white-space: pre;
   width: 100%;
   box-sizing: border-box;
+  white-space: pre-wrap;
 }
 
 .console .info {
@@ -389,6 +389,9 @@ a[disabled] {
 .sidebar ul,
 .sidebar ol {
   margin-bottom: 1em;
+}
+
+.sidebar ul {
   list-style: none;
 }
 
