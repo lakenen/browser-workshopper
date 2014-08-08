@@ -355,6 +355,10 @@ a[disabled] {
   display: block;
   padding-top: 1em;
 }
+.sidebar h2 {
+  font-size: 1.2em;
+  padding: 1em 0;
+}
 
 .sidebar hr {
   margin: 1.25em 0;

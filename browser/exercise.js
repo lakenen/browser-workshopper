@@ -1,4 +1,4 @@
-var progress    = require('browser-workshopper-progress')
+var progress    = require('./progress')
   , highlight   = require('highlight.js').highlight
   , console     = require('./console')
   , apprise     = require('apprise')

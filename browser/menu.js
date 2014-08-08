@@ -1,7 +1,7 @@
 var util = require('util')
   , sidenote = require('sidenote')
   , browserMenu = require('browser-menu')
-  , progress = require('browser-workshopper-progress')
+  , progress = require('./progress')
 
 module.exports = function (opts) {
   'use strict';
