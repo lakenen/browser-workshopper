@@ -73,7 +73,7 @@ function init(opt) {
       var exPath = path.join(exercisesDir, link, 'index.js')
       return function (b) {
         b.require(exPath, { expose: link })
-        exFileBundles[i](b)
+        // exFileBundles[i](b)
       }
     })
 
@@ -89,9 +89,7 @@ function init(opt) {
         w.require(file, { expose: path.basename(file) })
       })
       // opt.mainBundler(w)
-      exFileBundles.forEach(function (fn) {
-        fn(w)
-      })
+      exFileBundles[i](w)
       w.on('update', function (file) {
         // console.log('file updated', file)
         lastUpdate = Date.now()
