@@ -546,6 +546,11 @@ a[disabled] {
   margin: 0 2em 1em;
 }
 
+.success-msg p code {
+  background: #25B;
+  padding: 0 2px;
+}
+
 .continue .success-overlay {
   visibility: visible;
   opacity: 1;
