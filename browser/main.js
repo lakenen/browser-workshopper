@@ -28,6 +28,9 @@ function loadExerciseFiles() {
       return
     }
     console.info('DONE!')
+    if (exerciseData.update) {
+      exerciseData.update()
+    }
   })
 }
 

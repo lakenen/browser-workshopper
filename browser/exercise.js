@@ -44,11 +44,8 @@ module.exports = function(ex) {
 
   var sidebarEl = document.querySelector('.sidebar')
 
-  if (ex.title) {
-    document.title = ex.title
-  }
-
-  document.body.classList.add(ex.dirname)
+  document.title = ex.title || process.env.title
+  document.body.classList.add('exercise__' + ex.dirname)
 
   if (ex.description) {
     sidebarEl.innerHTML = marked(ex.description)

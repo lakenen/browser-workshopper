@@ -211,7 +211,7 @@ function createMainRoute(opt, tmpDir, exBundles, cb) {
     exBundles.forEach(function (fn) {
       fn(b)
     })
-    b.transform(require('envify/custom')({
+    b.transform({ global: true }, require('envify/custom')({
         title: opt.title
       , exercises: opt.exercisesDir
     }))
