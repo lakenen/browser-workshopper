@@ -541,6 +541,11 @@ a[disabled] {
   text-align: center;
 }
 
+.success-msg ul,
+.success-msg ol {
+  margin: 0 2em 1em;
+}
+
 .continue .success-overlay {
   visibility: visible;
   opacity: 1;
