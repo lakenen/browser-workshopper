@@ -29,6 +29,8 @@ marked.setOptions({
     }
 })
 
+var DEFAULT_TEST_TIMEOUT = 10000
+
 module.exports = function(ex) {
   setupPage(ex)
   setupNotifications()
@@ -106,7 +108,7 @@ module.exports = function(ex) {
       timeoutTID = setTimeout(function () {
         setState('failed')
         console.error('TIMEOUT')
-      }, ex.testTimeout || 5000)
+      }, ex.testTimeout || DEFAULT_TEST_TIMEOUT)
     }
   }
 
