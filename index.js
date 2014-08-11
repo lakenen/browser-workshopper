@@ -105,7 +105,7 @@ function init(opt) {
             console.error('error bundling', link)
             console.error(e)
           }
-          res.end('window.LOAD_FAILED = true; throw new Error("'+e.message+'")')
+          res.end('window.LOAD_FAILED = true; throw new Error("'+e.message.replace(/"/g, '\\"')+'")')
         }).pipe(res)
       }
     })
