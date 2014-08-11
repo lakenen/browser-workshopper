@@ -51,7 +51,7 @@ function init(opt) {
   function setupBundles() {
     console.log('Done!')
     var exNames  = Object.keys(exercises)
-    var exLinks  = exNames.map(function(k) { return exercises[k] })
+    var exLinks  = exNames.map(function(k) { return exercises[k] }).filter(Boolean)
 
     var exFiles  = exLinks.map(function(link) {
       var dir = path.resolve(root, link)
