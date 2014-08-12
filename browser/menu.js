@@ -45,13 +45,22 @@ module.exports = function (opts) {
     distance: 10
   })
 
+  var maxRowLength = rows.reduce(function (a, b) {
+    return a > b.length ? a : b.length
+  }, 0)
+
+  var line = '------------------------------------------'
+
+  while (line.length < maxRowLength) {
+    line += '-'
+  }
+
   rows = rows.map(function(row, i) {
-    var cat = cats[i]
-      , line = '------------------------------------------'
+    var cat = cats[i], l
 
     if (lcat !== cat) {
-      line = '- <span><span>' + cat + '</span></span> ' + line.slice(cat.length)
-      menu.write(line + '\n')
+      l = '- <span><span>' + cat + '</span></span> ' + line.slice(cat.length)
+      menu.write(l + '\n')
       lcat = cat
     }
 
