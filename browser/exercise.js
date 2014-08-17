@@ -235,8 +235,10 @@ function setupSliders() {
   sliderColumn.addEventListener('dblclick', resetColumn, false)
   sliderRow.addEventListener('dblclick', resetRow, false)
 
-  var minRow = display.offsetTop + 80
-    , minCol = 80
+  var MIN_SIZE = 80
+
+  var minRow = display.offsetTop + MIN_SIZE
+    , minCol = MIN_SIZE
 
   var colPos = progress.get('column-position')
     , rowPos = progress.get('row-position')
@@ -244,7 +246,7 @@ function setupSliders() {
 
   function slideColumnTo(x) {
     if (!x) return
-    var max = window.innerWidth - 80
+    var max = window.innerWidth - MIN_SIZE
     x = Math.min(max, Math.max(minCol, x))
     sidebar.style.maxWidth = (x - 2) + 'px'
     sidebar.style.minWidth = (x - 2) + 'px'
@@ -253,7 +255,7 @@ function setupSliders() {
   }
   function slideRowTo(y) {
     if (!y) return
-    var max = window.innerHeight - display.offsetTop - 80
+    var max = window.innerHeight - display.offsetTop - MIN_SIZE
     y = Math.min(max, Math.max(minRow, y))
     display.style.maxHeight = (y - 2) + 'px'
     display.style.minHeight = (y - 2) + 'px'
