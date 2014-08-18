@@ -62,16 +62,22 @@ module.exports = function(ex) {
   }
   var verifyButton = document.querySelector('.verify-btn')
     , retryButton = document.querySelector('.retry-btn')
+    , successButton = document.querySelector('.success-btn')
     , continueLink = document.querySelector('.continue-link')
+    , quitLink = document.querySelector('.quit-link')
+
+  function showContinueScreen(ev) {
+    document.body.classList.remove('success')
+    document.body.classList.add('continue')
+    ev.preventDefault()
+  }
 
   function init() {
     console.log('DONE!')
     verifyButton.addEventListener('click', runTest)
     retryButton.addEventListener('click', runTest)
-    continueLink.addEventListener('click', function () {
-      document.body.classList.remove('success')
-      document.body.classList.add('continue')
-    })
+    continueLink.addEventListener('click', showContinueScreen)
+    successButton.addEventListener('click', showContinueScreen)
   }
 
   function runTest() {
@@ -94,6 +100,7 @@ module.exports = function(ex) {
         progress.setProgress(ex.dirname, true)
         timeoutTID = setTimeout(function () {
           document.body.classList.add('success')
+          quitLink.addEventListener('click', showContinueScreen)
         }, 1000)
       } else {
         // TRY AGAIN?
