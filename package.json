@@ -16,7 +16,6 @@
   "dependencies": {
     "apprise": "^1.0.0",
     "autoprefixer": "^2.1.1",
-    "beefy": "^2.0.3",
     "brfs": "^1.2.0",
     "browser-menu": "https://github.com/lakenen/browser-menu/tarball/browser-workshopper",
     "browserify": "^4.2.1",
@@ -49,7 +48,9 @@
     "wordwrap": "0.0.2",
     "xhr": "^1.14.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "beefy": "^2.0.3"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/lakenen/browser-workshopper.git"
