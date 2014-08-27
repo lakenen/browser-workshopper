@@ -52,7 +52,7 @@ body {
   flex: 2;
   flex-flow: column;
   flex-direction: column;
-  margin-left: -4px;
+  margin-left: -2px;
 }
 
 .display {
@@ -67,7 +67,7 @@ body {
 
 .console {
   flex: 1 auto;
-  margin-top: -4px;
+  margin-top: -2px;
   overflow: auto;
   background-color: #363d43;
   /*background-color: #161d23;*/
@@ -136,12 +136,15 @@ body {
 
 .slider-column {
   cursor: col-resize;
-  border-right: 4px solid transparent;
+  margin-left: -2px;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
 }
 
 .slider-row {
   cursor: row-resize;
-  border-bottom: 4px solid transparent;
+  margin-top: -3px;
+  border-bottom: 5px solid transparent;
 }
 
 .button, .link {

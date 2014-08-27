@@ -255,8 +255,8 @@ function setupSliders() {
     if (!x) return
     var max = window.innerWidth - MIN_SIZE
     x = Math.min(max, Math.max(minCol, x))
-    sidebar.style.maxWidth = (x - 2) + 'px'
-    sidebar.style.minWidth = (x - 2) + 'px'
+    sidebar.style.maxWidth = x + 'px'
+    sidebar.style.minWidth = x + 'px'
     colPos = x
     progress.set('column-position', x)
   }
@@ -264,8 +264,8 @@ function setupSliders() {
     if (!y) return
     var max = window.innerHeight - display.offsetTop - MIN_SIZE
     y = Math.min(max, Math.max(minRow, y))
-    display.style.maxHeight = (y - 2) + 'px'
-    display.style.minHeight = (y - 2) + 'px'
+    display.style.maxHeight = y + 'px'
+    display.style.minHeight = y + 'px'
     rowPos = y
     progress.set('row-position', y)
   }
