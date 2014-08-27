@@ -82,6 +82,7 @@ module.exports = function(ex) {
 
   function runTest() {
     var timeoutTID
+      , timedOut = false
 
     if (!ex.test) {
       return console.warn('No test function specified for this lesson yet...')
@@ -93,6 +94,9 @@ module.exports = function(ex) {
     clearTimeout(timeoutTID)
     ex.test(function(err, result) {
       clearTimeout(timeoutTID)
+      if (timedOut) {
+        throw null
+      }
       if (result) {
 
         setState('passed')
@@ -114,7 +118,8 @@ module.exports = function(ex) {
     if (ex.testTimeout !== false) {
       timeoutTID = setTimeout(function () {
         setState('failed')
-        console.error('TIMEOUT')
+        timedOut = true
+        throw new Error('test timed out')
       }, ex.testTimeout || DEFAULT_TEST_TIMEOUT)
     }
   }
@@ -147,6 +152,9 @@ function setupNotifications() {
 
   var previous = null
   window.onerror = function(message, source, line, ch, err) {
+    if (!err) {
+      return
+    }
     var msg = String(err.message || 'unknown error')
     console.error('ERROR: ' + msg)
     if (err.message === previous) return
