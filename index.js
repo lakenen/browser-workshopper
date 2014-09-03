@@ -55,7 +55,10 @@ function init(opt) {
     var exFiles  = exLinks.map(function(link) {
       var dir = path.resolve(root, link)
 
-      return fs.readdirSync(dir).map(function(name) {
+      // filter out dotfiles
+      return fs.readdirSync(dir).filter(function (name) {
+        return name.charAt(0) !== '.'
+      }).map(function(name) {
         return path.resolve(dir, name)
       })
     })
