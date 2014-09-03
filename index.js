@@ -7,7 +7,6 @@ var extend    = require('extend')
 var inject    = require('./lib/inject-script')
 var opener    = require('opener')
 var mkdirp    = require('mkdirp')
-var beefy     = require('beefy')
 var chalk     = require('chalk')
 var brfs      = require('brfs')
 var http      = require('http')
@@ -219,6 +218,7 @@ function createMainRoute(opt, tmpDir, exBundles, cb) {
   }
 
   if (DEV) {
+    var beefy = require('beefy')
     return cb(null, beefy({
         cwd: path.join(__dirname, 'browser')
       , entries: ['main.js']
