@@ -2,5 +2,6 @@
   "asi": true,
   "laxcomma": true,
   "node": true,
-  "browser": true
+  "browser": true,
+  "unused": true
 }
