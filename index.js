@@ -24,6 +24,19 @@ var closeWindow = fs.readFileSync(
 
 module.exports = init
 
+var debug = {
+    log: function () {
+      if (DEV) {
+        console.log.apply(console, arguments)
+      }
+    }
+  , error: function () {
+      if (DEV) {
+        console.error.apply(console, arguments)
+      }
+    }
+}
+
 function init(opt) {
   opt = opt || {}
   mainPort = opt.port || mainPort
@@ -48,13 +61,28 @@ function init(opt) {
   }
 
   function setupBundles() {
+    var exNames
+      , exDirs
+      , exBundles
+      , exSolutionFiles
+      , exSolutionBundles
+      , exSolutionRoutes
+
     console.log('Done!')
-    var exNames  = Object.keys(exercises)
-    var exLinks  = exNames.map(function(k) { return exercises[k] }).filter(Boolean)
 
-    var exFiles  = exLinks.map(function(link) {
+    exNames  = Object.keys(exercises)
+    exLinks  = exNames.map(function(k) { return exercises[k] }).filter(Boolean)
+
+    // main exercise code bundles
+    exBundles = exLinks.map(function(link, i) {
+      var exPath = path.join(exercisesDir, link, 'index.js')
+      return function (b) {
+        b.require(exPath, { expose: link })
+      }
+    })
+
+    exSolutionFiles = exLinks.map(function(link) {
       var dir = path.resolve(root, link)
-
       // filter out dotfiles
       return fs.readdirSync(dir).filter(function (name) {
         return name.charAt(0) !== '.'
@@ -63,55 +91,60 @@ function init(opt) {
       })
     })
 
-    var exFileBundles = exLinks.map(function (link, i) {
+    // exercise solution code bundles
+    exSolutionBundles = exLinks.map(function (link, i) {
       var bundlerPath = path.join(exercisesDir, link, 'bundler.js')
+        , exSolutionBundler = function () {}
+
+      // check if this solution has a custom bundler
       if (fs.existsSync(bundlerPath)) {
-        return require(bundlerPath)
+        exSolutionBundler = require(bundlerPath)
       }
-      return function () {}
-    })
 
-    var exBundles = exLinks.map(function(link, i) {
-      var exPath = path.join(exercisesDir, link, 'index.js')
       return function (b) {
-        b.require(exPath, { expose: link })
-        // exFileBundles[i](b)
+        // add all the solution files
+        exSolutionFiles[i].forEach(function (file) {
+          b.require(file, { expose: path.basename(file) })
+        })
+        // add any custom bundlers this exercise might have
+        exSolutionBundler(b)
       }
     })
 
-    var exRoutes = exLinks.map(function(link, i) {
-      if (exFiles[i].length === 0) {
+    function createExerciseBundleRoute(link, i) {
+      // if there's no files, just return a route that does nothing
+      if (exSolutionFiles[i].length === 0) {
         return function (req, res) {
           res.end()
         }
       }
+
       var w = watchify()
-      exFiles[i].forEach(function (file) {
-        // w.add(file)
-        w.require(file, { expose: path.basename(file) })
-      })
-      // opt.mainBundler(w)
-      exFileBundles[i](w)
+
+      // bundle this solution's files
+      exSolutionBundles[i](w)
+
+      // check for file updates, and queue an event to let the browser know
       w.on('update', function (file) {
         // console.log('file updated', file)
         lastUpdate = Date.now()
         events.queue(path.basename(file))
       })
+
       return function (req, res) {
-        if (DEV) {
-          console.log('bundling', link)
-        }
+        debug.log('bundling', link)
         res.setHeader('content-type', 'text/javascript')
         w.bundle().on('error', function (e) {
-          if (DEV) {
-            console.error('error bundling', link)
-            console.error(e)
-          }
+          debug.error('error bundling', link, e)
+          // send an error to the browser
           res.end('window.LOAD_FAILED = true; throw new Error("'+e.message.replace(/"/g, '\\"')+'")')
         }).pipe(res)
       }
-    })
+    }
 
+    exSolutionRoutes = exLinks.map(createExerciseBundleRoute)
+
+    // start with an empty exercise route
     var currentExercise = function (req, res, next) { next() };
     var exercise = function (name, route, req, res) {
       if (/\.js$/.test(req.url)) {
@@ -165,12 +198,15 @@ function init(opt) {
           return res.end(closeWindow)
         }
 
+        // if the request matches any of the exercise bundles, initiate that exercise
         for (var i = 0; i < exLinks.length; i++) {
           if (uri.indexOf(exLinks[i]) === 1) {
-            return exercise(exLinks[i], exRoutes[i], req, res)
+            return exercise(exLinks[i], exSolutionRoutes[i], req, res)
           }
         }
 
+        // all other requests go throuh the current exercise route,
+        // then fall back to the main route
         currentExercise(req, res, function () {
           main(req, res)
         })
@@ -190,6 +226,7 @@ function init(opt) {
       sse.install(server)
 
       sse.on('connection', function (client) {
+        // pipe event stream to the browser
         events.pipe(client)
       })
     }
@@ -221,6 +258,8 @@ function createMainRoute(opt, tmpDir, exBundles, cb) {
   }
 
   if (DEV) {
+    // only use beefy in dev mode, because it's really slow, since it bundles on
+    // every request, even if nothing changed
     var beefy = require('beefy')
     return cb(null, beefy({
         cwd: path.join(__dirname, 'browser')
