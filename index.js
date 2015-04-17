@@ -119,7 +119,8 @@ function init(opt) {
         }
       }
 
-      var w = watchify()
+      var b = browserify()
+      var w = watchify(b)
 
       // bundle this solution's files
       exSolutionBundles[i](w)
