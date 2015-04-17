@@ -1,6 +1,6 @@
 {
   "name": "browser-workshopper",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A browser-based node workshopper framework",
   "main": "index.js",
   "bin": {
